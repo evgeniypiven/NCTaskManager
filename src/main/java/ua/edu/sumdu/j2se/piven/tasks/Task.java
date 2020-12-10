@@ -1,6 +1,9 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
-public class Task {
+import java.io.*;
+import java.util.Objects;
+
+public class Task implements Cloneable, Serializable {
     private String title;
     private int time;
     private int start = -1;
@@ -198,5 +201,65 @@ public class Task {
             }
             return -1;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        else if (o == null) {
+            return false;
+        }
+        else if (!(o instanceof Task)) {
+            return false;
+        }
+        Task other = (Task) o;
+        if (this.getRepeatInterval() > 0 && other.getRepeatInterval() > 0) {
+            boolean titleEquals = this.getTitle().equals(other.getTitle());
+            boolean activeEquals = this.isActive() == other.isActive();
+            boolean startEquals = this.getStartTime() == other.getStartTime();
+            boolean endEquals = this.getEndTime() == other.getEndTime();
+            boolean intervalEquals = this.getRepeatInterval() == other.getRepeatInterval();
+            return titleEquals && activeEquals && startEquals && endEquals && intervalEquals;
+        }
+        else if (this.getRepeatInterval() <= 0 && other.getRepeatInterval() <= 0) {
+            boolean titleEquals = this.getTitle().equals(other.getTitle());
+            boolean activeEquals = this.isActive() == other.isActive();
+            boolean timeEquals = this.getTime() == other.getTime();
+            return titleEquals && activeEquals && timeEquals;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (this.getRepeatInterval() > 0) {
+            return Objects.hash(active, start, end, interval);
+        }
+        else {
+            return Objects.hash(active, time);
+        }
+    }
+
+    public String toString() {
+        if (this.getRepeatInterval() > 0) {
+            return "The " + (active ? "active" : "non-active") +
+                    " repeatable task - '" + title + "' with start time "
+                    + String.valueOf(start) + ", end time "
+                    + String.valueOf(end) + " and interval "
+                    + String.valueOf(interval) + "." + "\n";
+        }
+        else {
+            return "The " + (active ? "active" : "non-active") +
+                    " non-repeatable task - '" + title + "' with time "
+                    + String.valueOf(time) + "." + "\n";
+        }
+    }
+
+    public Task clone() throws CloneNotSupportedException {
+        return (Task)super.clone();
     }
 }

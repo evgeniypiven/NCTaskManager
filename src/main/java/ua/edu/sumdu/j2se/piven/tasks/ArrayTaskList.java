@@ -1,6 +1,8 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
-public class ArrayTaskList extends AbstractTaskList {
+import java.util.Iterator;
+
+public class ArrayTaskList extends AbstractTaskList implements Iterable<Task> {
     private Task[] tasks;
     private int task_size = 10;
 
@@ -54,13 +56,8 @@ public class ArrayTaskList extends AbstractTaskList {
         return false;
     }
 
-//    public ArrayTaskList incoming(int from, int to) throws ArrayIndexOutOfBoundsException {
-//        if (size() > 0) {
-//            ArrayTaskList arrayTaskList = new ArrayTaskList();
-//            for (int i = 0; i < size(); i++)
-//                if (tasks[i].getStartTime() > from && tasks[i].getEndTime() < to) arrayTaskList.add(tasks[i]);
-//            return arrayTaskList;
-//        }
-//        else throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
-//    }
+    @Override
+    public Iterator<Task> iterator() {
+        return new ArrayListIterator(this);
+    }
 }

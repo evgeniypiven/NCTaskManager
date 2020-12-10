@@ -1,6 +1,9 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
-public class LinkedTaskList extends AbstractTaskList {
+import java.util.Iterator;
+import java.util.Objects;
+
+public class LinkedTaskList extends AbstractTaskList implements Iterable<Task> {
     private int size;
     private Node head;
 
@@ -22,13 +25,18 @@ public class LinkedTaskList extends AbstractTaskList {
         tail().next = new Node(task);
     }
 
-    private Node tail() {
+    public Node tail() {
         Node tail = this.head;
 
         while (tail.next != null) {
             tail = tail.next;
         }
         return tail;
+    }
+
+    public Node getHead()
+    {
+        return head;
     }
 
     public boolean remove(Task task) {
@@ -47,27 +55,8 @@ public class LinkedTaskList extends AbstractTaskList {
         return false;
     }
 
-    //public LinkedTaskList incoming(int from, int to) throws ArrayIndexOutOfBoundsException {
-    //if (size() > 0) {
-            //LinkedTaskList linkedTaskList =  new LinkedTaskList();
-            //for (int i = 0; i < size(); i++) {
-            //Task task = getTask(i);
-            //if (task.getStartTime() > from && task.getEndTime() < to) {
-            // linkedTaskList.add(task);
-            //}
-            //}
-            //return linkedTaskList;
-            //}
-            //else {
-            //throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
-            //}
-            //}
-
-    private class Node {
-        public Task task;
-        public Node next;
-        public Node(Task task) {
-            this.task = task;
-        }
+    @Override
+    public Iterator<Task> iterator() {
+        return new LinkedListIterator(this);
     }
 }

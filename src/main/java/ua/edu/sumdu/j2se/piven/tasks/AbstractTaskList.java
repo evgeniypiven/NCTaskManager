@@ -1,24 +1,94 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
-public abstract class AbstractTaskList {
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+
+public abstract class AbstractTaskList implements Cloneable, Serializable {
     abstract int size();
     abstract Task getTask(int index);
     abstract void add(Task task);
     abstract boolean remove(Task task);
 
-    public AbstractTaskList incoming(int from, int to) {
+    public AbstractTaskList incoming(int from, int to) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (size() > 0) {
-            LinkedTaskList linkedTaskList =  new LinkedTaskList();
+            AbstractTaskList taskList =  getClass().getDeclaredConstructor().newInstance();
             for (int i = 0; i < size(); i++) {
                 Task task = getTask(i);
                 if (task.getStartTime() > from && task.getEndTime() < to && task.isActive()) {
-                    linkedTaskList.add(task);
+                    taskList.add(task);
                 }
             }
-            return linkedTaskList;
+            return taskList;
         }
         else {
             throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        else if (o == null) {
+            return false;
+        }
+        else if (!(o instanceof AbstractTaskList)) {
+            return false;
+        }
+        AbstractTaskList other = (AbstractTaskList) o;
+        int thisSize = this.size();
+        int otherSize = other.size();
+        if (thisSize == otherSize) {
+            if (thisSize == 0) {
+                return true;
+            }
+            for (int i = 0; i < this.size(); i++) {
+                if (!this.getTask(i).equals(other.getTask(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int thisSize = this.size();
+        int hashCode = 1;
+        for (int i = 0; i < thisSize; i++) {
+            hashCode = 31 * hashCode + (this.getTask(i) == null ? 0 : this.hashCode());
+        }
+        return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        int thisSize = this.size();
+        StringBuilder resultString = new StringBuilder(this.getClass().getName() + "with such tasks: \n");
+        for (int i = 0; i < thisSize; i++) {
+            resultString.append(this.getTask(i).toString());
+        }
+        return resultString.toString();
+    }
+
+    @Override
+    public AbstractTaskList clone() throws CloneNotSupportedException {
+        AbstractTaskList cloneObj = (AbstractTaskList)super.clone();
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(cloneObj);
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(bais);
+            return (AbstractTaskList) objectInputStream.readObject();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
