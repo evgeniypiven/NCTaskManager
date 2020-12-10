@@ -19,8 +19,8 @@ public class Task {
         if (title.length() == 0) {
             throw new IllegalArgumentException("Title length has to be more than 0 characters.");
         }
-        else if (time <= 0) {
-            throw new IllegalArgumentException("Time has to be bigger than 0.");
+        else if (time < 0) {
+            throw new IllegalArgumentException("Time has to be positive number.");
         }
         this.title = title;
         this.time = time;
@@ -112,24 +112,24 @@ public class Task {
      * @return task execution start time
      */
     public int getStartTime() {
-        if (this.interval <= 0) {
-            return this.time;
+        if (this.interval > 0) {
+            return this.start;
         }
         else {
-            return this.start;
+            return this.time;
         }
     }
 
     /**
      *
-     * @return task execution end time
+     * @return task end execution time
      */
     public int getEndTime() {
-        if (this.interval <= 0) {
-            return this.time;
+        if (this.interval > 0) {
+            return this.end;
         }
         else {
-            return this.end;
+            return this.time;
         }
     }
 
