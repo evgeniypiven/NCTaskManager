@@ -8,45 +8,45 @@ public class ArrayTaskList {
         this.tasks = new Task[task_size];
     }
 
-    public Task getTask(int index) {
-        return this.tasks[index];
+    public Task getTask(int index) throws IndexOutOfBoundsException {
+        return tasks[index];
     }
 
     public int size() {
         int count = 0;
-        for (Task task : this.tasks)
+        for (Task task : tasks)
             if (task != null)
                 ++count;
         return count;
     }
 
     public void add(Task task) {
-        if (this.size() == this.task_size) {
+        if (size() == task_size) {
             // add size to tasks array, if it doesnt enough
-            this.task_size = this.task_size + 10;
+            task_size = task_size + 10;
             Task[] tmp_tasks = new Task[task_size];
-            System.arraycopy(this.tasks, 0, tmp_tasks, 0, this.tasks.length);
-            this.tasks = tmp_tasks;
+            System.arraycopy(tasks, 0, tmp_tasks, 0, tasks.length);
+            tasks = tmp_tasks;
         }
-        this.tasks[this.size()] = task;
+        tasks[size()] = task;
     }
 
     public boolean remove(Task task) {
-        for (int i = 0; i < this.tasks.length; i++) {
-            if (this.tasks[i] == task) {
-                this.tasks[i] = null;
-                for (int j = i; j < this.tasks.length; j++) {
-                    if (j == this.tasks.length - 1) {
+        for (int i = 0; i < tasks.length; i++) {
+            if (tasks[i] == task) {
+                tasks[i] = null;
+                for (int j = i; j < tasks.length; j++) {
+                    if (j == tasks.length - 1) {
                         // deduct tasks size, if it`s too much for new quantity
-                        if (this.size() - 1 % 10 == 0) {
-                            this.task_size = this.task_size - 10;
+                        if (size() - 1 % 10 == 0) {
+                            task_size = task_size - 10;
                             Task[] tmp_tasks = new Task[task_size];
-                            System.arraycopy(this.tasks, 0, tmp_tasks, 0, this.tasks.length);
-                            this.tasks = tmp_tasks;
+                            System.arraycopy(tasks, 0, tmp_tasks, 0, tasks.length);
+                            tasks = tmp_tasks;
                         }
                         return true;
                     }
-                    this.tasks[j] = this.tasks[j + 1];
+                    tasks[j] = tasks[j + 1];
                 }
 
             }
@@ -55,21 +55,12 @@ public class ArrayTaskList {
     }
 
     public ArrayTaskList incoming(int from, int to) throws ArrayIndexOutOfBoundsException {
-        if (this.size() > 0) {
-            Task[] tmp_tasks = new Task[this.task_size];
-            int counter = 0;
-            for (int i = 0; i < this.size(); i++) {
-                if (this.tasks[i].getStartTime() > from && this.tasks[i].getEndTime() < to && this.tasks[i].isActive()) {
-                    tmp_tasks[counter] = this.tasks[i];
-                    counter++;
-                }
-            }
-            ArrayTaskList temp_arr_task_list = new ArrayTaskList();
-            temp_arr_task_list.tasks = tmp_tasks;
-            return temp_arr_task_list;
+        if (size() > 0) {
+            ArrayTaskList arrayTaskList = new ArrayTaskList();
+            for (int i = 0; i < size(); i++)
+                if (tasks[i].getStartTime() > from && tasks[i].getEndTime() < to && tasks[i].isActive()) arrayTaskList.add(tasks[i]);
+            return arrayTaskList;
         }
-        else {
-            throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
-        }
+        else throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
     }
 }
