@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-abstract class AbstractTaskList implements Cloneable, Serializable {
+public abstract class AbstractTaskList implements Cloneable, Serializable {
     abstract int size();
     abstract Task getTask(int index);
     abstract void add(Task task);
@@ -16,12 +16,10 @@ abstract class AbstractTaskList implements Cloneable, Serializable {
         if (size() > 0) {
             AbstractTaskList taskList =  getClass().getDeclaredConstructor().newInstance();
             IntStream.range(0, size())
-                    .forEach(i -> {
-                        Task task = getTask(i);
+                    .mapToObj(this::getTask).forEach(task -> {
                         if (task.getStartTime().isAfter(from) && task.getEndTime().isBefore(to) && task.isActive()) {
                             taskList.add(task);
-                        }
-                    });
+                    }});
             return taskList;
         }
         else {
@@ -47,7 +45,7 @@ abstract class AbstractTaskList implements Cloneable, Serializable {
             if (thisSize == 0) {
                 return true;
             }
-            for (int i = 0; i < this.size(); i++) {
+            for (int i = 0; i < thisSize; i++) {
                 if (!this.getTask(i).equals(other.getTask(i))) {
                     return false;
                 }

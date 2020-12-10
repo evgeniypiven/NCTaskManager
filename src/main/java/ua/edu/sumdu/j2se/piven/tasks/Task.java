@@ -213,23 +213,15 @@ public class Task implements Cloneable, Serializable {
             return false;
         }
         Task other = (Task) o;
-        if (this.getRepeatInterval() > 0 && other.getRepeatInterval() > 0) {
-            boolean titleEquals = this.getTitle().equals(other.getTitle());
-            boolean activeEquals = this.isActive() == other.isActive();
-            boolean startEquals = this.getStartTime() == other.getStartTime();
-            boolean endEquals = this.getEndTime() == other.getEndTime();
-            boolean intervalEquals = this.getRepeatInterval() == other.getRepeatInterval();
-            return titleEquals && activeEquals && startEquals && endEquals && intervalEquals;
-        }
-        else if (this.getRepeatInterval() <= 0 && other.getRepeatInterval() <= 0) {
-            boolean titleEquals = this.getTitle().equals(other.getTitle());
-            boolean activeEquals = this.isActive() == other.isActive();
-            boolean timeEquals = this.getTime() == other.getTime();
-            return titleEquals && activeEquals && timeEquals;
-        }
-        else {
-            return false;
-        }
+
+        boolean titleEquals = this.getTitle().equals(other.getTitle());
+        boolean activeEquals = this.isActive() == other.isActive();
+        boolean timeEquals = this.getTime() == other.getTime();
+        boolean startEquals = this.getStartTime() == other.getStartTime();
+        boolean endEquals = this.getEndTime() == other.getEndTime();
+        boolean intervalEquals = this.getRepeatInterval() == other.getRepeatInterval();
+        return titleEquals && activeEquals && timeEquals && startEquals && endEquals && intervalEquals;
+
     }
 
     @Override

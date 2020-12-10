@@ -1,5 +1,6 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
