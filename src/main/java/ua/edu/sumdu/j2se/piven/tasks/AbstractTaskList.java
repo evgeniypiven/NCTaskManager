@@ -2,22 +2,23 @@ package ua.edu.sumdu.j2se.piven.tasks;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public abstract class AbstractTaskList implements Cloneable, Serializable {
+abstract class AbstractTaskList implements Cloneable, Serializable {
     abstract int size();
     abstract Task getTask(int index);
     abstract void add(Task task);
     abstract boolean remove(Task task);
 
-    public final AbstractTaskList incoming(int from, int to) throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+    public final AbstractTaskList incoming(LocalDateTime from, LocalDateTime to) throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
         if (size() > 0) {
             AbstractTaskList taskList =  getClass().getDeclaredConstructor().newInstance();
             IntStream.range(0, size())
                     .forEach(i -> {
                         Task task = getTask(i);
-                        if (task.getStartTime() > from && task.getEndTime() < to && task.isActive()) {
+                        if (task.getStartTime().isAfter(from) && task.getEndTime().isBefore(to) && task.isActive()) {
                             taskList.add(task);
                         }
                     });

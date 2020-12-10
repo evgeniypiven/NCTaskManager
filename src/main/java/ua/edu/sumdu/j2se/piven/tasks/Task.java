@@ -1,13 +1,14 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task implements Cloneable, Serializable {
     private String title;
-    private int time;
-    private int start = -1;
-    private int end = -1;
+    private LocalDateTime time;
+    private LocalDateTime start = null;
+    private LocalDateTime end = null;
     private int interval = -1;
     private boolean active;
     private boolean repeated;
@@ -18,12 +19,9 @@ public class Task implements Cloneable, Serializable {
      * @param time
      * @throws IllegalArgumentException
      */
-    public Task(String title, int time) throws IllegalArgumentException {
+    public Task(String title, LocalDateTime time) throws IllegalArgumentException {
         if (title.length() == 0) {
             throw new IllegalArgumentException("Title length has to be more than 0 characters.");
-        }
-        else if (time < 0) {
-            throw new IllegalArgumentException("Time has to be positive number.");
         }
         this.title = title;
         this.time = time;
@@ -37,11 +35,11 @@ public class Task implements Cloneable, Serializable {
      * @param interval
      * @throws IllegalArgumentException
      */
-    public Task(String title,  int start, int end, int interval) throws IllegalArgumentException {
-        if (start > end) {
+    public Task(String title,  LocalDateTime start, LocalDateTime end, int interval) throws IllegalArgumentException {
+        if (start.isAfter(end)) {
             throw new IllegalArgumentException("Start time is bigger than end.");
         }
-        else if (start == end) {
+        else if (start.isEqual(end)) {
             throw new IllegalArgumentException("Task doesn`t able to start.");
         }
         else if (interval <= 0) {
@@ -88,7 +86,7 @@ public class Task implements Cloneable, Serializable {
      *
      * @return time, if task is not repeated. Else, task start execution time
      */
-    public int getTime() {
+    public LocalDateTime getTime() {
         if (this.interval > 0) {
             return this.start;
         }
@@ -102,7 +100,7 @@ public class Task implements Cloneable, Serializable {
      *
      * @param time
      */
-    public void setTime(int time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
         this.repeated = false;
         if (this.interval > 0) {
@@ -114,7 +112,7 @@ public class Task implements Cloneable, Serializable {
      *
      * @return task execution start time
      */
-    public int getStartTime() {
+    public LocalDateTime getStartTime() {
         if (this.interval > 0) {
             return this.start;
         }
@@ -127,7 +125,7 @@ public class Task implements Cloneable, Serializable {
      *
      * @return task end execution time
      */
-    public int getEndTime() {
+    public LocalDateTime getEndTime() {
         if (this.interval > 0) {
             return this.end;
         }
@@ -158,8 +156,8 @@ public class Task implements Cloneable, Serializable {
      * @param end
      * @param interval
      */
-    public void setTime(int start, int end, int interval) {
-        this.time = 0;
+    public void setTime(LocalDateTime start, LocalDateTime end, int interval) {
+        this.time = null;
         this.start = start;
         this.end = end;
         this.interval = interval;
@@ -171,35 +169,35 @@ public class Task implements Cloneable, Serializable {
      * @param current
      * @return next execution time after current time
      */
-    public int nextTimeAfter(int current) {
+    public LocalDateTime nextTimeAfter(LocalDateTime current) {
         if (!this.active) {
-            return -1;
+            return null;
         }
-        else if (this.time > 0) {
-            if (current >= this.time) {
-                return -1;
+        else if (this.time != null) {
+            if (current.isAfter(this.time) || current.isEqual(this.time)) {
+                return null;
             }
             else {
                 return this.time;
             }
         }
         else {
-            if (current < this.start) {
+            if (current.isBefore(this.start)) {
                 return this.start;
             }
-            else if (current > this.end) {
-                return -1;
+            else if (current.isAfter(this.end)) {
+                return null;
             }
             else {
-                int prevTime = this.start;
-                for (int i = this.start; i < this.end; i += this.interval) {
-                    if(prevTime <= current && i > current) {
+                LocalDateTime prevTime = this.start;
+                for (LocalDateTime i = this.start; i.isBefore(this.end) || i.isEqual(this.end); i = i.plusSeconds(this.interval)) {
+                    if((prevTime.isBefore(current) || prevTime.isEqual(current)) && i.isAfter(current)) {
                         return i;
                     }
                     prevTime = i;
                 }
             }
-            return -1;
+            return null;
         }
     }
 
