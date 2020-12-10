@@ -1,7 +1,8 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
 import java.util.Iterator;
-import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class LinkedTaskList extends AbstractTaskList implements Iterable<Task> {
     private int size;
@@ -58,5 +59,15 @@ public class LinkedTaskList extends AbstractTaskList implements Iterable<Task> {
     @Override
     public Iterator<Task> iterator() {
         return new LinkedListIterator(this);
+    }
+
+    @Override
+    public Stream<Task> getStream() {
+        Task[] tasks = new Task[size()];
+        IntStream.range(0, size())
+                .forEach(index -> {
+                    tasks[index] = getTask(index);
+                });
+        return Stream.of(tasks);
     }
 }

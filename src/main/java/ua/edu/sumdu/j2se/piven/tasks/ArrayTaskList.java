@@ -1,6 +1,7 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 public class ArrayTaskList extends AbstractTaskList implements Iterable<Task> {
     private Task[] tasks;
@@ -57,7 +58,13 @@ public class ArrayTaskList extends AbstractTaskList implements Iterable<Task> {
     }
 
     @Override
+    public Stream<Task> getStream() {
+        return Stream.of(tasks);
+    }
+
+    @Override
     public Iterator<Task> iterator() {
         return new ArrayListIterator(this);
     }
+
 }

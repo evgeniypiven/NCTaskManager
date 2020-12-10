@@ -2,6 +2,8 @@ package ua.edu.sumdu.j2se.piven.tasks;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Cloneable, Serializable {
     abstract int size();
@@ -9,15 +11,16 @@ public abstract class AbstractTaskList implements Cloneable, Serializable {
     abstract void add(Task task);
     abstract boolean remove(Task task);
 
-    public AbstractTaskList incoming(int from, int to) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public final AbstractTaskList incoming(int from, int to) throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
         if (size() > 0) {
             AbstractTaskList taskList =  getClass().getDeclaredConstructor().newInstance();
-            for (int i = 0; i < size(); i++) {
-                Task task = getTask(i);
-                if (task.getStartTime() > from && task.getEndTime() < to && task.isActive()) {
-                    taskList.add(task);
-                }
-            }
+            IntStream.range(0, size())
+                    .forEach(i -> {
+                        Task task = getTask(i);
+                        if (task.getStartTime() > from && task.getEndTime() < to && task.isActive()) {
+                            taskList.add(task);
+                        }
+                    });
             return taskList;
         }
         else {
@@ -90,5 +93,14 @@ public abstract class AbstractTaskList implements Cloneable, Serializable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Stream<Task> getStream() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        AbstractTaskList taskList =  getClass().getDeclaredConstructor().newInstance();
+        for (int i = 0; i < size(); i++) {
+            Task task = getTask(i);
+            taskList.add(task);
+        }
+        return taskList.getStream();
     }
 }
