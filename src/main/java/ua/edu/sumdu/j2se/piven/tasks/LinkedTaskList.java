@@ -1,6 +1,6 @@
 package ua.edu.sumdu.j2se.piven.tasks;
 
-public class LinkedTaskList {
+public class LinkedTaskList extends AbstractTaskList {
     private int size;
     private Node head;
 
@@ -47,21 +47,21 @@ public class LinkedTaskList {
         return false;
     }
 
-    public LinkedTaskList incoming(int from, int to) throws ArrayIndexOutOfBoundsException {
-        if (size() > 0) {
-            LinkedTaskList linkedTaskList =  new LinkedTaskList();
-            for (int i = 0; i < size(); i++) {
-                Task task = getTask(i);
-                if (task.getStartTime() > from && task.getEndTime() < to && task.isActive()) {
-                    linkedTaskList.add(task);
-                }
-            }
-            return linkedTaskList;
-        }
-        else {
-            throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
-        }
-    }
+    //public LinkedTaskList incoming(int from, int to) throws ArrayIndexOutOfBoundsException {
+    //if (size() > 0) {
+            //LinkedTaskList linkedTaskList =  new LinkedTaskList();
+            //for (int i = 0; i < size(); i++) {
+            //Task task = getTask(i);
+            //if (task.getStartTime() > from && task.getEndTime() < to) {
+            // linkedTaskList.add(task);
+            //}
+            //}
+            //return linkedTaskList;
+            //}
+            //else {
+            //throw new ArrayIndexOutOfBoundsException("Size of tasks array is 0.");
+            //}
+            //}
 
     private class Node {
         public Task task;
